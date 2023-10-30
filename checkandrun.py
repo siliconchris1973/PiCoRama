@@ -9,8 +9,8 @@
 #                                                            #
 # by c.guenther[at]mac.com                                   #
 #                                                            #
-# Date: 01.11.2022                                           #
-# Version: 1.0                                               #
+# Date: 30.10.2023                                           #
+# Version: 1.1                                               #
 #                                                            #
 ##############################################################
 #                                                            #
@@ -25,18 +25,21 @@
 #                                                            #
 # ---------------------------------------------------------- #
 # V1.0 01.11.2022 initial release                            #
+# V1.1 30.10.2023 added exception handling                   #
 ##############################################################
 import time
 import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
-logger.setLevel('INFO')
+logger.setLevel('DEBUG')
 
 class checkandrun:
     ON = 1
     OFF = 0
     
     def __init__(self, setup, clock, motion, display, door, lights):
+        logger.info('init checkandrun class')
+        
         self.setup = setup
         
         self.ON = setup.getConfigParameter('ON')
@@ -58,14 +61,12 @@ class checkandrun:
         self.use_fader_lights = self.my_lights.getActiveLights('fader')
         self.use_timed_lights = self.my_lights.getActiveLights('timed')
         self.use_standard_lights = self.my_lights.getActiveLights('standard')
-        self.use_tv_ops_led = self.my_lights.getActiveLights('standard')
         
         self.use_door = self.setup.getConfigParameter('use_door')
         self.door_last_check_diff = self.setup.getConfigParameter('door_last_check_diff')
         self.keep_door_closed_for = self.setup.getConfigParameter('keep_door_closed_for')
         self.keep_door_opened_for = self.setup.getConfigParameter('keep_door_opened_for')
         
-        logger.info('init checkandrun class')
         
     ##################################################################
     ####                                                          ####
@@ -119,6 +120,7 @@ class checkandrun:
             there_is_motion = False
             
             while self.my_clock.getDateTimeElements('h') in self.setup.getConfigElementFromList('active_at', self.my_clock.getWeekday()):
+                logger.trace('within active run time')
                 ##################################################################
                 ####                                                          ####
                 ####                     TURN ON THE OLED                     ####
@@ -152,6 +154,7 @@ class checkandrun:
                 ####                                                          ####
                 ##################################################################
                 if self.use_door == True:
+                    logger.trace('checking door state')
                     current_door_state_since = time.ticks_ms()
                     door_last_check_time = 0
                     
@@ -170,6 +173,7 @@ class checkandrun:
                 ####                                                          ####
                 ##################################################################
                 if self.show_date_and_time_show == True:
+                    logger.trace('showing time and date')
                     if time.ticks_ms() > count_down_last_display_time + self.countdown_last_check_diff and there_is_motion == False: # 60000 = 1 MInute
                         logger.debug('showing date and time and countdown')
                         count_down_last_display_time = time.ticks_ms()
@@ -193,11 +197,8 @@ class checkandrun:
                 ##################################################################
                 there_is_motion = self.my_motion.getMotion()
                 if there_is_motion == True:
-                    logger.trace('motion detected')
+                    logger.debug('motion detected')
                     start_time = time.ticks_ms()
-                    if self.use_tv_ops_led == True and self.my_lights.getStatus('tv_ops') == self.OFF:
-                        logger.debug('turn on tv ops led')
-                        self.my_lights.poweron('tv_ops')
                     
                     if self.my_display.getStatus() == self.OFF:
                         logger.debug('power on display')
@@ -215,6 +216,7 @@ class checkandrun:
                 ##################################################################
                 # check motion either returns a motion or True if ever so long nothing was shown
                 while there_is_motion == True:
+                    logger.trace('motion detected - run the show')
                     if self.use_door == True:
                         #
                         #   CHECK DOOR STATE AND EITHER OPEN OR CLOSE IT
@@ -251,9 +253,6 @@ class checkandrun:
                     if there_is_motion == False:
                         self.my_display.blankScreen()
                         self.my_display.poweroff()
-                        if self.use_tv_ops_led == True and self.my_lights.getStatus('tv_ops') == self.ON:
-                            logger.debug('turn off tv ops led')
-                            self.my_lights.poweroff('tv_ops')
                 
                 ##################################################################
                 ####                                                          ####
@@ -290,7 +289,6 @@ class checkandrun:
             logger.warning('Interrupted - Display and Lights off')
             if self.use_door == True:
                 self.my_door.poweroff()
-            logger.trace('power off display')
             self.my_display.fillScreen(self.OFF)
             self.my_display.poweroff()
             self.my_lights.turnOffAllLights()
@@ -299,11 +297,18 @@ class checkandrun:
             logger.critical('Memory exhausted - Display and Lights off')
             if self.use_door == True:
                 self.my_door.poweroff()
-            logger.trace('power off display')
             self.my_display.fillScreen(self.OFF)
             self.my_display.poweroff()
             self.my_lights.turnOffAllLights()
-            
+        
+        except Exception as e:
+            logger.critical('Error in check and run loop: ' +str(e))
+            if self.use_door == True:
+                self.my_door.poweroff()
+            self.my_display.fillScreen(self.OFF)
+            self.my_display.poweroff()
+            self.my_lights.turnOffAllLights()
+        
     async def waitABit(self, milliseconds=1):
         await asyncio.sleep_ms(milliseconds)
     

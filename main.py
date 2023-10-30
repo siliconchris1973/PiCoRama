@@ -9,8 +9,8 @@
 #                                                            #
 # by c.guenther[at]mac.com                                   #
 #                                                            #
-# Date: 01.11.2022                                           #
-# Version: 1.0                                               #
+# Date: 30.10.2023                                           #
+# Version: 1.1                                               #
 #                                                            #
 ##############################################################
 #                                                            #
@@ -45,7 +45,10 @@ my_clock = clock(my_setup)
 my_motion = motion(my_setup)
 my_lights = lights(my_setup)
 my_display = display(my_setup, my_clock)
-my_door = door(my_setup)
+if my_setup.getConfigParameter('use_door') == True:
+    my_door = door(my_setup)
+else:
+    my_door = ''
 
 # with the initialized classes of the individual components we now initialize the
 # main check-and-run class passing all class objects along. This is done, so that
@@ -101,7 +104,6 @@ def main():
         # cancel the background tasks of the flicker, fader or timed lights
         # turn off all standard lights
         my_lights.turnOffAllLights()
-            
         # only in case the video is still on, turn it off
         if my_display.getStatus() == ON:
             my_display.poweroff()
@@ -113,11 +115,11 @@ def main():
         # cancel the background tasks of the flicker, fader or timed lights
         # turn off all standard lights
         my_lights.turnOffAllLights()
-        
         # only in case the video is still on, turn it off
         if my_display.getStatus() == ON:
             my_display.poweroff()
-        logger.error('Error: ') + str(e)
+        
+        logger.error('Error: ' + str(e))
 
 if __name__ == '__main__':
     main()

@@ -9,8 +9,8 @@
 #                                                            #
 # by c.guenther[at]mac.com                                   #
 #                                                            #
-# Date: 01.11.2022                                           #
-# Version: 1.0                                               #
+# Date: 30.10.2023                                           #
+# Version: 1.1                                               #
 #                                                            #
 # ---------------------------------------------------------- #
 # Display part partly based on work from peppe8o             #
@@ -30,7 +30,8 @@
 #  for i in *.jpg ; do convert -extract 85x64 $i $i ; done   #
 #                                                            #
 # ---------------------------------------------------------- #
-# V1.0 ß1.11.2022 initial release                            #
+# V1.0 01.11.2022 initial release                            #
+# V1.1 30.10.2023 added exception handling to display methods#
 ##############################################################
 from machine import Pin, I2C
 import framebuf, ssd1306
@@ -146,11 +147,10 @@ class display:
             self.i2c = I2C(local_i2c, sda=Pin(local_sda_pin), scl=Pin(local_slc_pin))
             
             logger.trace('initilizing the low level ssd1306 class with ' + str(self.oled_width)+'x'+str(self.oled_height))
-            self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
-            #try:
-            #    self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
-            #except Exception as e:
-            #    logger.error('could not initialize the display: ') + str(e)
+            try:
+                self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
+            except Exception as e:
+                logger.error('could not initialize the display: ') + str(e)
         
         
         self.poweroff()
@@ -619,13 +619,19 @@ class display:
             
             logger.crazy('text: ' + str(element) + ' x:' + str(x_pos) + ' y:' + str(y_pos))
             if self.use_display == True:
-                self.oled.text(element, x_pos, y_pos)
+                try:
+                    self.oled.text(element, x_pos, y_pos)
+                except Exception as e:
+                    logger.error('could not communicate with the display: ' + str(e))
             
             if y_centered == False:
                 y_pos += self.increment
             
             if self.use_display == True:
-                self.oled.show() # show the text
+                try:
+                    self.oled.show() # show the text
+                except Exception as e:
+                    logger.error('could not communicate with the display: ' + str(e))
             counter += 1
             
             await asyncio.sleep_ms(text_pause)
@@ -663,15 +669,24 @@ class display:
     def invertScreen(self, color):
         logger.crazy('invert screen with ' + str(color))
         if self.use_display == True:
-            self.oled.invert(color)
+            try:
+                self.oled.invert(color)
+            except Exception as e:
+                logger.error('could not communicate with the display: ' + str(e))
     def fillScreen(self, color):
         logger.crazy('fill screen with ' + str(color))
         if self.use_display == True:
-            self.oled.fill(color)
+            try:
+                self.oled.fill(color)
+            except Exception as e:
+                logger.error('could not communicate with the display: ' + str(e))
     def blankScreen(self):
         logger.crazy('blank screen')
         if self.use_display == True:
-            self.oled.fill(0)
+            try:
+                self.oled.fill(0)
+            except Exception as e:
+                logger.error('could not communicate with the display: ' + str(e))
     def getImageDimension(self, file_to_check):
         with open(file_to_check, 'r') as f:
             f.readline()
@@ -700,5 +715,8 @@ class display:
     def showImage(self, img_buffer, img_width, img_height, x_pos, y_pos):
         if self.use_display == True:
             data = framebuf.FrameBuffer(img_buffer, img_width, img_height, framebuf.MONO_HLSB)
-            self.oled.blit(data, x_pos, y_pos)
-            self.oled.show()
+            try:
+                self.oled.blit(data, x_pos, y_pos)
+                self.oled.show()
+            except Exception as e:
+                logger.error('could not communicate with the display: ' + str(e))

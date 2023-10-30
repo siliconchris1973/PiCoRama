@@ -9,8 +9,8 @@
 #                                                            #
 # by c.guenther[at]mac.com                                   #
 #                                                            #
-# Date: 28.10.2023                                           #
-# Version: 1.1                                               #
+# Date: 30.10.2023                                           #
+# Version: 1.2                                               #
 #                                                            #
 ##############################################################
 #                                                            #
@@ -33,6 +33,7 @@
 # V1.0 01.11.2022 initial release                            #
 # V1.1 28.10.2023 updates necessary for the new ds1307.py    #
 #                 low level driver                           #
+# V1.2 30.10.2023 added exception handling to clock methods  #
 ##############################################################
 from machine import Pin, I2C
 import utime, time
@@ -77,7 +78,10 @@ class clock:
     
     def getDateTimeElements(self, element='h'):
         if self.use_clock == True:
-            self.cur_time = self.rtc.datetime
+            try:
+                self.cur_time = self.rtc.datetime
+            except Exception as e:
+                logger.error('could not communicate with the real time clock: '+str(e))
         day = self.cur_time[2]
         month = self.cur_time[1]
         year = self.cur_time[0]
@@ -104,7 +108,10 @@ class clock:
     
     def getWeekday(self):
         if self.use_clock == True:
-            self.cur_time = self.rtc.datetime
+            try:
+                self.cur_time = self.rtc.datetime
+            except Exception as e:
+                logger.error('could not communicate with the real time clock: '+str(e))
         
         weekday = self.cur_time[6]
         logger.trace('current weekday ' + str(weekday) + '=' + self.setup.getConfigElementFromList('weekdays', weekday))
@@ -113,7 +120,10 @@ class clock:
     
     def getDateTime(self):
         if self.use_clock == True:
-            self.cur_time = self.rtc.datetime
+            try:
+                self.cur_time = self.rtc.datetime
+            except Exception as e:
+                logger.error('could not communicate with the real time clock: '+str(e))
         
         weekday=self.getWeekday()
         datum=str(self.cur_time[2]) +'.' + str(self.cur_time[1]) + '.' +str(self.cur_time[0])
@@ -124,7 +134,10 @@ class clock:
     def printTime(self):
         # Zeit lesen und ausgeben
         if self.use_clock == True:
-            self.cur_time = self.rtc.datetime
+            try:
+                self.cur_time = self.rtc.datetime
+            except Exception as e:
+                logger.error('could not communicate with the real time clock: '+str(e))
         time_text = 'Es ist ' + self.getWeekday() + ', der ' + str(self.cur_time[2]) + '.' + str(self.cur_time[1]) + '.' +str(self.cur_time[0]) + ' ' + str(self.cur_time[3]) + ':' + str(self.cur_time[4]) + ':' +str(self.cur_time[5]) + ' Uhr'
         
         logger.info(time_text)
@@ -143,7 +156,10 @@ class clock:
             logger.debug('geting the time till countdown')
             
             if self.use_clock == True:
-                self.cur_time = self.rtc.datetime
+                try:
+                    self.cur_time = self.rtc.datetime
+                except Exception as e:
+                    logger.error('could not communicate with the real time clock: '+str(e))
             cur_d = self.cur_time[2]
             cur_m = self.cur_time[1]
             cur_y = self.cur_time[0]

@@ -114,9 +114,9 @@ class setup:
         #
         #  OLED - Display
         # is the OLED connected to I2C 0 or 1
-        , 'oled_i2c': 0
-        , 'oled_sda_pin': 12
-        , 'oled_scl_pin': 13
+        , 'oled_i2c': 1
+        , 'oled_sda_pin': 10
+        , 'oled_scl_pin': 11
         #
         #  OLED DIMENSIONS
         # dimensions of the oled display

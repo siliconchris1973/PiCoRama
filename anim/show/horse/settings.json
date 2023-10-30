@@ -1,0 +1,26 @@
+{ "title": "Der wilde Reiter"
+                    , "directory": "anim/show/horse"
+                    , "repetitions": 5
+                    , "invert_color": 0
+                    , "invert_prior_show": true
+                    , "image_pause": 100
+                    , "sleep_after_animation": 250
+                    , "sleep_after_text_line": 750
+                    , "sleep_after_greeting": 2000
+                    , "sleep_after_end": 2000
+                    , "intro_text": [""
+                                   , "Er reitet"
+                                   , "wie ein"
+                                   , "Teufel"
+                                   , ""
+                                   , "Elfen-TV"
+                                   , "praesentiert"
+                                   , ""
+                                   , "Der Reiter"
+                                   ]
+                    , "end_text": ["Wahnsinn"]
+                    , "show_before_the_show_text": false
+                    , "show_after_the_show_text": false
+                    , "show_date_time_text": false
+                    , "show_countdown_text": false
+}

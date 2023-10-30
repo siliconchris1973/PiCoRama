@@ -1,0 +1,22 @@
+{ "title": "Testbild"
+                    , "directory": "anim/pause/tbild"
+                    , "repetitions": 1
+                    , "invert_color": 1
+                    , "invert_prior_show": true
+                    , "image_pause": 750
+                    , "sleep_after_animation": 1000
+                    , "sleep_after_text_line": 500
+                    , "sleep_after_greeting": 2000
+                    , "sleep_after_end": 250
+                    , "intro_text": ["Elfen-TV"
+                                    , ""
+                                    , "Das"
+                                    , "Weihnachts"
+                                    , "fernsehen"
+                                    ]
+                    , "end_text": []
+                    , "show_before_the_show_text": false
+                    , "show_after_the_show_text": false
+                    , "show_date_time_text": false
+                    , "show_countdown_text": true
+}

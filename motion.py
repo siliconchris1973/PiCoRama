@@ -9,8 +9,8 @@
 #                                                            #
 # by c.guenther[at]mac.com                                   #
 #                                                            #
-# Date: 01.11.2022                                           #
-# Version: 1.0                                               #
+# Date: 30.10.2023                                           #
+# Version: 1.1.1                                             #
 #                                                            #
 ##############################################################
 #                                                            #
@@ -21,6 +21,7 @@
 # ---------------------------------------------------------- #
 # V1.0 01.11.2022 initial release                            #
 # V1.1 30.10.2023 bugfixed class reference                   #
+# V1.1.1 30.10.2023 exception handling for hw communication  #
 ##############################################################
 from machine import Pin
 import time
@@ -53,7 +54,10 @@ class motion:
         
         # import and initialize the PIR receiver class
         if self.use_motion_detector == True:
-            self.pir = Pin(self.setup.getConfigParameter('pir_pin'), Pin.IN, Pin.PULL_DOWN)
+            try:
+                self.pir = Pin(self.setup.getConfigParameter('pir_pin'), Pin.IN, Pin.PULL_DOWN)
+            except Exception as e:
+                logger.error('could not communicate with PIR hardware: ' + str(e))
         
         self.last_movement_time = time.ticks_ms()
         #logger.trace('init with movement time at ' + str(self.last_movement_time))
@@ -76,7 +80,10 @@ class motion:
         pir_value = self.OFF
         check_time = time.ticks_ms()
         if self.use_motion_detector == True:
-            pir_value = self.pir.value()
+            try:
+                pir_value = self.pir.value()
+            except Exception as e:
+                logger.error('could not communicate with PIR hardware: ' + str(e))
         else:
             pir_value = self.ON
         

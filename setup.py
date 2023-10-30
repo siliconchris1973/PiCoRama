@@ -122,6 +122,7 @@ class setup:
         # dimensions of the oled display
         , 'oled_width': 128
         , 'oled_height': 64
+        , 'oled_rotated': False # is the oled display turned upside down?
         # pixels for the horizontal and vertical text line positioning
         , 'max_text_height': 60
         , 'line_height': 12

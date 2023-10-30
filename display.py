@@ -10,7 +10,7 @@
 # by c.guenther[at]mac.com                                   #
 #                                                            #
 # Date: 30.10.2023                                           #
-# Version: 1.1                                               #
+# Version: 1.1.1                                             #
 #                                                            #
 # ---------------------------------------------------------- #
 # Display part partly based on work from peppe8o             #
@@ -32,6 +32,8 @@
 # ---------------------------------------------------------- #
 # V1.0 01.11.2022 initial release                            #
 # V1.1 30.10.2023 added exception handling to display methods#
+# V1.1.1 30.10.2023 implemented rotate method to turn display#
+#                   upside down                              #
 ##############################################################
 from machine import Pin, I2C
 import framebuf, ssd1306
@@ -68,6 +70,7 @@ class display:
         self.max_text_height = 60
         self.oled_height = 64
         self.oled_width = 128
+        self.oled_rotated = True # is the display upside down?
         
         self.anim_dir = ''
         self.intro_dir = ''
@@ -95,6 +98,7 @@ class display:
         self.max_text_height = self.setup.getConfigParameter('max_text_height')
         self.oled_height = self.setup.getConfigParameter('oled_height')
         self.oled_width = self.setup.getConfigParameter('oled_width')
+        self.oled_rotated = self.setup.getConfigParameter('oled_rotated')
         
         self.the_intro_show_number = 0
         self.last_intro_show_number = 0
@@ -151,8 +155,9 @@ class display:
                 self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
             except Exception as e:
                 logger.error('could not initialize the display: ') + str(e)
-        
-        
+            
+            self.oled.rotate(self.oled_rotated)
+            
         self.poweroff()
         
         logger.info('init the shows')
@@ -629,6 +634,7 @@ class display:
             
             if self.use_display == True:
                 try:
+                    self.oled.rotate(self.oled_rotated)
                     self.oled.show() # show the text
                 except Exception as e:
                     logger.error('could not communicate with the display: ' + str(e))
@@ -716,6 +722,7 @@ class display:
         if self.use_display == True:
             data = framebuf.FrameBuffer(img_buffer, img_width, img_height, framebuf.MONO_HLSB)
             try:
+                self.oled.rotate(self.oled_rotated)
                 self.oled.blit(data, x_pos, y_pos)
                 self.oled.show()
             except Exception as e:

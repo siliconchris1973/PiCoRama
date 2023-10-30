@@ -3,7 +3,7 @@
 # handle a diorama - this diorama may contain various lights #
 # some of which may be turn ed on / off at certain times,    #
 # may flicker or fade. Additionally a motion detectore with  #
-# a PIR can be used to initialize tv shows on a pöed display #
+# a PIR can be used to initialize tv shows on a oled display #
 # These shows consist of small b/w image animations derived  #
 # from gifs.                                                 #
 #                                                            #

@@ -31,6 +31,7 @@ import time
 import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
 logger.setLevel('DEBUG')
 
 class checkandrun:

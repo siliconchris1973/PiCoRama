@@ -27,7 +27,8 @@ from machine import Pin, PWM
 import time
 from logging import getLogger
 logger = getLogger(__name__)
-logger.setLevel('INFO')
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
+logger.setLevel('TRACE')
 
 class door():
     ON = 1

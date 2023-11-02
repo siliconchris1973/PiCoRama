@@ -29,6 +29,7 @@ import time
 import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
 logger.setLevel('INFO')
 
 # source in and initialize all the classes of the individual parts of the

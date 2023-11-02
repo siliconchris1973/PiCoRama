@@ -28,6 +28,7 @@
 import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
 logger.setLevel('INFO')
 
 from led import led

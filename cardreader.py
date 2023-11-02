@@ -1,3 +1,28 @@
+##############################################################
+# PiCoRama is a complete set of MicroPython scripts that can #
+# handle a diorama - this diorama may contain various lights #
+# some of which may be turn ed on / off at certain times,    #
+# may flicker or fade. Additionally a motion detectore with  #
+# a PIR can be used to initialize tv shows on a oled display #
+# These shows consist of small b/w image animations derived  #
+# from gifs.                                                 #
+#                                                            #
+# by c.guenther[at]mac.com                                   #
+#                                                            #
+# Date: 01.11.2022                                           #
+# Version: 1.0                                               #
+#                                                            #
+##############################################################
+#                                                            #
+#    CARDREADER                                              #
+# ---------------------------------------------------------- #
+# High level driver for the card reader. Makes use of        #
+# sdcard_rp2 to provide an interface for reading and writing #
+# to an sd-card. Used to store and retrieve animations etc.  #
+#                                                            #
+# ---------------------------------------------------------- #
+# V1.0 01.11.2022 initial release                            #
+##############################################################
 from machine import Pin, SPI
 import os
 
@@ -5,6 +30,7 @@ import sdcard_rp2 as sdcard
 
 from logging import getLogger
 logger = getLogger(__name__)
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
 logger.setLevel('TRACE')
 
 class cardreader:

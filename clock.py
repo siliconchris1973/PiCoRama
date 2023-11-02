@@ -40,6 +40,7 @@ import utime, time
 import ds1307
 from logging import getLogger
 logger = getLogger(__name__)
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
 logger.setLevel('INFO')
 
 class clock:

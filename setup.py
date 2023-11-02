@@ -69,14 +69,15 @@
 
 from logging import getLogger
 logger = getLogger(__name__)
-logger.setLevel('DEBUG')
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
+logger.setLevel('WARNING')
 
 class setup:
     parameters = {
         #  DEFINES WHICH HARDWARE FEATURES TO USE
           'use_clock': True         # shall we make use of the real time clock
         , 'use_display': True       # shall we display animations an text on screem
-        , 'use_motion_detector': False # shall we check for motion
+        , 'use_motion_detector': True # shall we check for motion
         , 'use_door': False          # shall we use the door part
         , 'use_door_motor': False   # shall we really drive the door motor
         , 'use_doorbell': False     # shall we use the push button to open the door

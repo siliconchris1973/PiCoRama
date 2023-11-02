@@ -43,7 +43,8 @@ import random
 import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
-logger.setLevel('TRACE')
+# SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
+logger.setLevel('INFO')
 
 class display:
     ON = 1

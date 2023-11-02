@@ -138,7 +138,7 @@ class setup:
 
         #
         #  PIR - Infrared Receiver
-        , 'pir_pin': 21
+        , 'pir_pin': 16
 
         #
         #  SERVO - Motor to drive the door
@@ -220,10 +220,11 @@ class setup:
         #
         #  CONFIGURATION OF THE TIMED LEDS
         , 'timed_led_1': {
-            'PIN': -1
-            , 'NAME': '1. Advent'
-            # year month day weekday hour minute second when to turn on
-            , 'led_min_on_timer': (2023, 11, 27, 0, 5, 0)
+            'PIN': 2
+            , 'NAME': 'Christmas Tree'
+            # 						year month day weekday hour minute second when to turn on
+            #, 'led_min_on_timer': (2023, 11, 27, 0, 5, 0)
+            , 'led_min_on_timer': (2023, 11, 02, 0, 5, 0)
             , 'led_max_on_timer': -1
             , 'led_min_off_timer': -1
             , 'led_max_off_timer': -1
@@ -232,9 +233,9 @@ class setup:
             , 'is_of_type': 'timed'
             }
         , 'timed_led_2': {
-            'PIN': -1
-            , 'NAME': '2. Advent'
-            , 'led_min_on_timer': (2023, 12, 4, 0, 5, 0)
+            'PIN': 1
+            , 'NAME': 'Girlande'
+            , 'led_min_on_timer': (2023, 11, 2, 0, 17, 0)
             , 'led_max_on_timer': -1
             , 'led_min_off_timer': -1
             , 'led_max_off_timer': -1

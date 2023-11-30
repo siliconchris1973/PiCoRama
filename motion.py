@@ -83,18 +83,29 @@ class motion:
         if self.use_motion_detector == True:
             try:
                 pir_value = self.pir.value()
+                
             except Exception as e:
                 logger.error('could not communicate with PIR hardware: ' + str(e))
         else:
             pir_value = self.ON
         
         cur_time_diff = time.ticks_diff(check_time, self.last_movement_time)
-        logger.trace('time '+str(check_time)+' last movement was '+str(self.last_movement_time)+' -> diff: ' + str(cur_time_diff) + ' ms is < = > ' + str(self.show_something_every_x_ms))
         
-        if ((pir_value == self.ON) or (cur_time_diff > self.show_something_every_x_ms)):
-            logger.trace('motion detected or time run out since last show')
-            self.last_movement_time = time.ticks_ms()
-            self.there_is_motion = True
+        # only if show_something_every_x_ms is set to a real value we may occassionally show a show regardless of a movement
+        if self.show_something_every_x_ms > -1:
+            logger.trace('time '+str(check_time)+' last movement was '+str(self.last_movement_time)+' -> diff: ' + str(cur_time_diff) + ' ms is < = > ' + str(self.show_something_every_x_ms))
+            
+            if ((pir_value == self.ON) or (cur_time_diff > self.show_something_every_x_ms)):
+                logger.trace('motion detected or time run out since last show')
+                self.last_movement_time = time.ticks_ms()
+                self.there_is_motion = True
+        else:
+            logger.trace('time '+str(check_time)+' last movement was '+str(self.last_movement_time)+' -> diff: ' + str(cur_time_diff) + ' ms')
+            
+            if pir_value == self.ON:
+                logger.trace('motion detected')
+                self.last_movement_time = time.ticks_ms()
+                self.there_is_motion = True
         
         logger.debug('pir value=' + str(pir_value) + ', ms since last schow='+str(cur_time_diff)+'ms: motion=' + str(self.there_is_motion))
         

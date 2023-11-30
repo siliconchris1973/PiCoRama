@@ -78,10 +78,11 @@ class setup:
           'use_clock': False          # shall we make use of the real time clock
         , 'use_display': True         # shall we display animations an text on screem
         , 'use_motion_detector': True # shall we check for motion
-        , 'use_door': False           # shall we use the door part
-        , 'use_door_motor': False     # shall we really drive the door motor
+        , 'use_door': True           # shall we use the door part
+        , 'use_door_motor': True     # shall we really drive the door motor
         , 'use_doorbell': False       # shall we use the push button to open the door
         , 'use_sdcard': False         # shall we use an sdcard for the animations
+        
         , 'use_active_hours': False   # if set to true, the code will check if the current date / time is within
                                       # the active hours defined below - does only make sense with the real time clock
         
@@ -401,8 +402,8 @@ class setup:
         
         # how long in ms between checks for movememnt
         , 'sleep_between_checks_in_ms': 1757
-        # regardless of detected movement, the show shall start every 120.000 ms (every 2 minutes)
-        , 'show_something_every_x_ms': 120000
+        # if not -1 regardless of detected movement, the show shall start every x ms - eg 120.000 = every 2 minutes
+        , 'show_something_every_x_ms': -1 #120000
         
         #
         # GENERIC STUFF

@@ -41,8 +41,8 @@ class door():
         
         self.use_door_motor = self.setup.getConfigParameter('use_door_motor')
         
-        self.ON = self.setup.getConfigParameter('ON')
-        self.OFF = self.setup.getConfigParameter('OFF')
+        ON = self.setup.getConfigParameter('ON')
+        OFF = self.setup.getConfigParameter('OFF')
         
         self.motor_drive = ''
         self.motor_drive_freq = 50

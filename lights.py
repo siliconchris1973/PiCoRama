@@ -29,7 +29,7 @@ import uasyncio as asyncio
 from logging import getLogger
 logger = getLogger(__name__)
 # SEVERITY = CRITICAL ERROR WARNING INFO DEBUG TRACE CRAZY
-logger.setLevel('INFO')
+logger.setLevel('ERROR')
 
 from led import led
 
@@ -346,6 +346,7 @@ class lights:
             array_of_lights = self.timed_leds
         elif name_of_lights == 'standard':
             array_of_lights = self.standard_leds
+        logger.trace('array of '+name_of_lights+' lights contains ' + str(array_of_lights))
         if len(array_of_lights) > 0:
             return(True)
         return(False)

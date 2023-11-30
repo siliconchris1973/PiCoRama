@@ -62,9 +62,9 @@ class clock:
         
         self.use_clock = self.setup.getConfigParameter('use_clock')
         self.target_date = self.setup.getConfigParameter('target_date')
-        self.last_check_time = 0
         
-        self.remaining_days = 0
+        self.last_check_time = 0
+        self.remaining_days = 0 # if the countdown is active these are the remaining days till the event
         
         # Initialisierung
         if self.use_clock == True:

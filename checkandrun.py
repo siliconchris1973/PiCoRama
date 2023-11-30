@@ -68,6 +68,12 @@ class checkandrun:
         self.keep_door_closed_for = self.setup.getConfigParameter('keep_door_closed_for')
         self.keep_door_opened_for = self.setup.getConfigParameter('keep_door_opened_for')
         
+        self.use_active_hours = self.setup.getConfigParameter('use_active_hours')
+        
+        if self.use_active_hours == True:
+            self.active_hours = self.setup.getConfigElementFromList('active_at', self.my_clock.getWeekday())
+        else:
+            self.active_hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
         
     ##################################################################
     ####                                                          ####
@@ -120,7 +126,7 @@ class checkandrun:
         try:
             there_is_motion = False
             
-            while self.my_clock.getDateTimeElements('h') in self.setup.getConfigElementFromList('active_at', self.my_clock.getWeekday()):
+            while self.my_clock.getDateTimeElements('h') in self.active_hours:
                 logger.trace('within active run time')
                 ##################################################################
                 ####                                                          ####
@@ -302,13 +308,13 @@ class checkandrun:
             self.my_display.poweroff()
             self.my_lights.turnOffAllLights()
         
-        except Exception as e:
-            logger.critical('Error in check and run loop: ' +str(e))
-            if self.use_door == True:
-                self.my_door.poweroff()
-            self.my_display.fillScreen(self.OFF)
-            self.my_display.poweroff()
-            self.my_lights.turnOffAllLights()
+        #except Exception as e:
+        #    logger.critical('Error in check and run loop: ' +str(e))
+        #    if self.use_door == True:
+        #        self.my_door.poweroff()
+        #    self.my_display.fillScreen(self.OFF)
+        #    self.my_display.poweroff()
+        #    self.my_lights.turnOffAllLights()
         
     async def waitABit(self, milliseconds=1):
         await asyncio.sleep_ms(milliseconds)

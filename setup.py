@@ -75,24 +75,23 @@ logger.setLevel('WARNING')
 class setup:
     parameters = {
         #  DEFINES WHICH HARDWARE FEATURES TO USE
-          'use_clock': True         # shall we make use of the real time clock
-        , 'use_display': True       # shall we display animations an text on screem
+          'use_clock': False          # shall we make use of the real time clock
+        , 'use_display': True         # shall we display animations an text on screem
         , 'use_motion_detector': True # shall we check for motion
-        , 'use_door': False          # shall we use the door part
-        , 'use_door_motor': False   # shall we really drive the door motor
-        , 'use_doorbell': False     # shall we use the push button to open the door
-        , 'use_sdcard': False       # shall we use an sdcard for the animations
-        
-        # which leds to use is defined for each led below
-        # if it has a valid PIN defined, the led is used
+        , 'use_door': False           # shall we use the door part
+        , 'use_door_motor': False     # shall we really drive the door motor
+        , 'use_doorbell': False       # shall we use the push button to open the door
+        , 'use_sdcard': False         # shall we use an sdcard for the animations
+        , 'use_active_hours': False   # if set to true, the code will check if the current date / time is within
+                                      # the active hours defined below - does only make sense with the real time clock
         
         # show the current date and time when no show is shown 
-        , 'show_date_and_time_show': True
+        , 'show_date_and_time_show': False
         #  sleep times after showing the date and time and wait time for the text lines
         , 'sleep_after_date_time_line': 750
         , 'sleep_after_date_time_show': 1500
         # if True, then the number of days until the event are displayed occsionally
-        , 'use_countdown': True
+        , 'use_countdown': False
         #                 YYYY  MM  DD  HH  mm  ss  tzinfo
         , 'target_date': (2023, 12, 24, 06, 00, 00, 00)
         , 'target_event': 'Weihnachten'
@@ -160,10 +159,12 @@ class setup:
         , 'sdcard_miso': 12
         , 'sdcard_cs': 13
         
+        # which leds to use is defined for each led below
+        # if it has a valid PIN defined, the led is used
         #
         #  CONFIGURATION OF THE STANDARD LEDS
         , 'standard_led_1': {
-            'PIN': 25
+            'PIN': -1 #25
             , 'NAME': 'OPS LED'
             , 'led_min_on_timer': -1
             , 'led_max_on_timer': -1
@@ -220,7 +221,7 @@ class setup:
         #
         #  CONFIGURATION OF THE TIMED LEDS
         , 'timed_led_1': {
-            'PIN': 2
+            'PIN': -1 #2
             , 'NAME': 'Christmas Tree'
             # 						year month day weekday hour minute second when to turn on
             #, 'led_min_on_timer': (2023, 11, 27, 0, 5, 0)
@@ -233,7 +234,7 @@ class setup:
             , 'is_of_type': 'timed'
             }
         , 'timed_led_2': {
-            'PIN': 1
+            'PIN': -1
             , 'NAME': 'Girlande'
             , 'led_min_on_timer': (2023, 11, 2, 0, 17, 0)
             , 'led_max_on_timer': -1

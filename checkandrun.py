@@ -69,6 +69,7 @@ class checkandrun:
         self.keep_door_opened_for = self.setup.getConfigParameter('keep_door_opened_for')
         
         self.use_active_hours = self.setup.getConfigParameter('use_active_hours')
+        self.sync_door_with_shows = self.setup.getConfigParameter('sync_door_with_shows')
         
         if self.use_active_hours == True:
             self.active_hours = self.setup.getConfigElementFromList('active_at', self.my_clock.getWeekday())
@@ -161,18 +162,19 @@ class checkandrun:
                 ####                                                          ####
                 ##################################################################
                 if self.use_door == True:
-                    logger.trace('checking door state')
-                    current_door_state_since = time.ticks_ms()
-                    door_last_check_time = 0
-                    
-                    now_time = time.ticks_ms()
-                    if now_time > door_last_check_time + self.door_last_check_diff:
-                        logger.trace('changing door state')
-                        door_last_check_time = now_time
-                        current_door_state_since = self.checkDoorState(now_time,
-                                                                   current_door_state_since,
-                                                                   self.keep_door_closed_for,
-                                                                   self.keep_door_opened_for)
+                    if self.sync_door_with_shows == True:
+                        logger.trace('checking door state')
+                        current_door_state_since = time.ticks_ms()
+                        door_last_check_time = 0
+                        
+                        now_time = time.ticks_ms()
+                        if now_time > door_last_check_time + self.door_last_check_diff:
+                            logger.trace('changing door state')
+                            door_last_check_time = now_time
+                            current_door_state_since = self.checkDoorState(now_time,
+                                                                       current_door_state_since,
+                                                                       self.keep_door_closed_for,
+                                                                       self.keep_door_opened_for)
                 
                 ##################################################################
                 ####                                                          ####
@@ -224,7 +226,7 @@ class checkandrun:
                 # check motion either returns a motion or True if ever so long nothing was shown
                 while there_is_motion == True:
                     logger.trace('motion detected - run the show')
-                    if self.use_door == True:
+                    if self.use_door == True and self.sync_door_with_shows == False:
                         #
                         #   CHECK DOOR STATE AND EITHER OPEN OR CLOSE IT
                         #
@@ -260,7 +262,10 @@ class checkandrun:
                     if there_is_motion == False:
                         self.my_display.blankScreen()
                         self.my_display.poweroff()
-                
+                        if self.use_door == True:
+                            logger.debug('closing the door')
+                            self.my_door.poweroff()
+                            
                 ##################################################################
                 ####                                                          ####
                 ####                      THE SHOW IS OVER                    ####

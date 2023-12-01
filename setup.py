@@ -75,7 +75,7 @@ logger.setLevel('WARNING')
 class setup:
     parameters = {
         #  DEFINES WHICH HARDWARE FEATURES TO USE
-          'use_clock': False          # shall we make use of the real time clock
+          'use_clock': True          # shall we make use of the real time clock
         , 'use_display': True         # shall we display animations an text on screem
         , 'use_motion_detector': True # shall we check for motion
         , 'use_door': True           # shall we use the door part
@@ -85,6 +85,7 @@ class setup:
         
         , 'use_active_hours': False   # if set to true, the code will check if the current date / time is within
                                       # the active hours defined below - does only make sense with the real time clock
+        , 'sync_door_with_shows': True # if True, then the door will stay open during a show and be closed otherwise
         
         # show the current date and time when no show is shown 
         , 'show_date_and_time_show': False

@@ -121,6 +121,10 @@ class SSD1306_I2C(SSD1306):
         self.temp[0] = 0x80  # Co=1, D/C#=0
         self.temp[1] = cmd
         self.i2c.writeto(self.addr, self.temp)
+        #try:
+        #    self.i2c.writeto(self.addr, self.temp)
+        #except Exception as e:
+        #    print('error: ' + str(e))
 
     def write_data(self, buf):
         self.write_list[1] = buf

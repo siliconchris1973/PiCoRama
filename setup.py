@@ -76,7 +76,7 @@ class setup:
     parameters = {
         #  DEFINES WHICH HARDWARE FEATURES TO USE
           'use_clock': True          # shall we make use of the real time clock
-        , 'use_display': True         # shall we display animations an text on screem
+        , 'use_display': False         # shall we display animations an text on screem
         , 'use_motion_detector': True # shall we check for motion
         , 'use_door': True           # shall we use the door part
         , 'use_door_motor': True     # shall we really drive the door motor
@@ -85,7 +85,12 @@ class setup:
         
         , 'use_active_hours': False   # if set to true, the code will check if the current date / time is within
                                       # the active hours defined below - does only make sense with the real time clock
-        , 'sync_door_with_shows': True # if True, then the door will stay open during a show and be closed otherwise
+        
+        , 'sync_door_with_shows': True # if True, then the door will be opened during a show and then closed
+        , 'drive_door_random': False # if True, then the door will stay open during a show and be closed otherwise
+        , 'keep_door_closed_for': 120000 #5400000 # 1,5 h *60 min * 60 sec * 1000
+        , 'keep_door_opened_for': 20000 #300000   # 5 min * 60 sec * 1000
+        , 'door_last_check_diff': 60000
         
         # show the current date and time when no show is shown 
         , 'show_date_and_time_show': False
@@ -145,11 +150,10 @@ class setup:
         #  SERVO - Motor to drive the door
         , 'servo_pin': 17
         , 'motor_drive_freq': 50
-        , 'door_closed_position': 4500
-        , 'door_opened_position': 7500
-        , 'keep_door_closed_for': 120000 #5400000 # 1,5 h *60 min * 60 sec * 1000
-        , 'keep_door_opened_for': 20000 #300000   # 5 min * 60 sec * 1000
-        , 'door_last_check_diff': 60000
+        , 'door_closed_position': 4700
+        #, 'door_opened_position': 7500
+        , 'door_opened_position': 1200
+        
         #
         #  BUTTON - to open the door
         , 'doorbell_pin': 22

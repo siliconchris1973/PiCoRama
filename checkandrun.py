@@ -67,6 +67,11 @@ class checkandrun:
         self.door_last_check_diff = self.setup.getConfigParameter('door_last_check_diff')
         self.keep_door_closed_for = self.setup.getConfigParameter('keep_door_closed_for')
         self.keep_door_opened_for = self.setup.getConfigParameter('keep_door_opened_for')
+        self.sync_door_with_shows = self.setup.getConfigParameter('sync_door_with_shows')
+        self.drive_door_random = self.setup.getConfigParameter('drive_door_random')
+        self.current_door_state_since = 5000
+        self.status_change_at = 0
+        
         
         self.use_active_hours = self.setup.getConfigParameter('use_active_hours')
         self.sync_door_with_shows = self.setup.getConfigParameter('sync_door_with_shows')
@@ -81,40 +86,39 @@ class checkandrun:
     ####                     CHECK DOOR STATE                     ####
     ####                                                          ####
     ##################################################################
-    def checkDoorState(self, now_time, current_door_state_since, keep_door_closed_for, keep_door_opened_for):
+    def checkDoorState(self, now_time):
         if self.use_door == True:
             cur_state = self.my_door.getStatus()
             if cur_state == self.OFF:
-                status_change_at = current_door_state_since + keep_door_closed_for
+                self.status_change_at = self.current_door_state_since + self.keep_door_closed_for
             else:
-                status_change_at = current_door_state_since + keep_door_opened_for
+                self.status_change_at = self.current_door_state_since + self.keep_door_opened_for
             
-            if now_time >= status_change_at:
-                logger.debug('door is '
+        
+            if now_time >= self.status_change_at:
+                logger.debug('changing door state - door is now '
                           + self.my_door.getStatusName(True)
                           + ' since '
-                          + str(current_door_state_since)
+                          + str(self.current_door_state_since)
                           + ' now is '
                           + str(now_time)
-                          + ' state change at '
-                          + str(status_change_at)
-                          + ' => '
+                          + ' state changed at '
+                          + str(self.status_change_at)
+                          + ' to '
                           + self.my_door.getStatusName(False))
-                current_door_state_since = now_time
+                self.current_door_state_since = now_time
                 self.my_door.toggle()
             else:
                 logger.debug('no need to change door state - door is '
                           + self.my_door.getStatusName(True)
                           + ' since '
-                          + str(current_door_state_since)
+                          + str(self.current_door_state_since)
                           + ' now is '
                           + str(now_time)
                           + ' next change at '
-                          + str(status_change_at)
+                          + str(self.status_change_at)
                           )
-            return(current_door_state_since)
-    
-    
+            
     ##################################################################
     ####                                                          ####
     ####                       CHECK AND RUN                      ####
@@ -128,6 +132,7 @@ class checkandrun:
             there_is_motion = False
             
             while self.my_clock.getDateTimeElements('h') in self.active_hours:
+                logger.info('.')
                 logger.trace('within active run time')
                 ##################################################################
                 ####                                                          ####
@@ -161,20 +166,18 @@ class checkandrun:
                 ####        CHECK DOOR STATE AND EITHER OPEN OR CLOSE IT      ####
                 ####                                                          ####
                 ##################################################################
-                if self.use_door == True:
+                if self.use_door == True and self.drive_door_random == True:
                     if self.sync_door_with_shows == True:
-                        logger.trace('checking door state')
                         current_door_state_since = time.ticks_ms()
                         door_last_check_time = 0
                         
                         now_time = time.ticks_ms()
                         if now_time > door_last_check_time + self.door_last_check_diff:
-                            logger.trace('changing door state')
+                            logger.trace('checking on door state')
                             door_last_check_time = now_time
-                            current_door_state_since = self.checkDoorState(now_time,
-                                                                       current_door_state_since,
-                                                                       self.keep_door_closed_for,
-                                                                       self.keep_door_opened_for)
+                            self.checkDoorState(now_time)
+                else:
+                    logger.trace('no door or no occasional opening/closing the door, nothing to do here')
                 
                 ##################################################################
                 ####                                                          ####
@@ -299,7 +302,8 @@ class checkandrun:
         
         except KeyboardInterrupt:
             logger.warning('Interrupted - Display and Lights off')
-            if self.use_door == True:
+            if self.use_door == True and self.my_door.getStatus() == True:
+                logger.info('... closing the door')
                 self.my_door.poweroff()
             self.my_display.fillScreen(self.OFF)
             self.my_display.poweroff()
@@ -307,7 +311,8 @@ class checkandrun:
             
         except MemoryError:
             logger.critical('Memory exhausted - Display and Lights off')
-            if self.use_door == True:
+            if self.use_door == True and self.my_door.getStatus() == True:
+                logger.info('... closing the door')
                 self.my_door.poweroff()
             self.my_display.fillScreen(self.OFF)
             self.my_display.poweroff()
@@ -315,7 +320,8 @@ class checkandrun:
         
         #except Exception as e:
         #    logger.critical('Error in check and run loop: ' +str(e))
-        #    if self.use_door == True:
+        #    if self.use_door == True and self.my_door.getStatus() == False:
+        #        logger.info('... closing the door')
         #        self.my_door.poweroff()
         #    self.my_display.fillScreen(self.OFF)
         #    self.my_display.poweroff()

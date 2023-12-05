@@ -65,6 +65,7 @@ class door():
                     + ' open pos ' + str(self.door_open_pos)
                     + ' close pos ' + str(self.door_close_pos))
         
+        logger.trace('closing door on start')
         self.setServoPos(self.door_close_pos, 100)
         
     # compatibility layer with the other classes
@@ -74,14 +75,20 @@ class door():
         else:
             self.poweroff()
     def poweron(self):
-        self.door_status = self.OPEN
-        self.openDoor()
+        if self.door_status == self.CLOSE:
+            self.door_status = self.OPEN
+            self.openDoor()
     def poweroff(self):
-        self.door_status = self.CLOSE
-        self.closeDoor()
+        if self.door_status == self.OPEN:
+            self.door_status = self.CLOSE
+            self.closeDoor()
     
     def openDoor(self):
-        frequency = self.motor_drive_freq
+        if self.door_open_pos < self.door_close_pos:
+            frequency = self.motor_drive_freq*-1
+        else:
+            frequency = self.motor_drive_freq
+        
         self.door_time = time.ticks_ms()
         logger.info('opening door')
         logger.debug(' at ' + str(self.door_time))
@@ -91,7 +98,11 @@ class door():
         self.driveMotor(self.door_close_pos,self.door_open_pos,frequency)
         
     def closeDoor(self):
-        frequency = self.motor_drive_freq*-1
+        if self.door_open_pos > self.door_close_pos:
+            frequency = self.motor_drive_freq*-1
+        else:
+            frequency = self.motor_drive_freq
+        
         self.door_time = time.ticks_ms()
         logger.info('closing door')
         logger.debug(' at ' + str(self.door_time))

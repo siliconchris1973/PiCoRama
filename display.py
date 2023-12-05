@@ -152,12 +152,12 @@ class display:
             self.i2c = I2C(local_i2c, sda=Pin(local_sda_pin), scl=Pin(local_slc_pin))
             
             logger.trace('initilizing the low level ssd1306 class with ' + str(self.oled_width)+'x'+str(self.oled_height))
+            self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
             try:
                 self.oled = ssd1306.SSD1306_I2C(self.oled_width, self.oled_height, self.i2c)
+                self.oled.rotate(self.oled_rotated)
             except Exception as e:
-                logger.error('could not initialize the display: ') + str(e)
-            
-            self.oled.rotate(self.oled_rotated)
+                logger.error('could not initialize the display - possibly IO Error')
             
         self.poweroff()
         
